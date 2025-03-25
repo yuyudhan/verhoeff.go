@@ -1,4 +1,4 @@
-# If you prefer the allow list template instead of the deny list, see community template:
+# FilePath: .gitignore
 # https://github.com/github/gitignore/blob/main/community/Golang/Go.AllowList.gitignore
 #
 # Binaries for programs and plugins
@@ -23,3 +23,26 @@ go.work.sum
 
 # env file
 .env
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build output
+bin/
+tmp/
+
+# Debug files
+debug
+
