@@ -1,7 +1,5 @@
 // FilePath: verhoeff_test.go
 
-// github.com/yuyudhan/go-verhoeff/verhoeff_test.go
-
 package verhoeff
 
 import (
@@ -291,13 +289,19 @@ func TestAppendChecksum(t *testing.T) {
 func BenchmarkGenerate(b *testing.B) {
 	input := "123456789"
 	for i := 0; i < b.N; i++ {
-		Generate(input)
+		_, err := Generate(input)
+		if err != nil {
+			b.Fatalf("Generate() returned error: %v", err)
+		}
 	}
 }
 
 func BenchmarkValidate(b *testing.B) {
 	input := "1234567897" // 123456789 with checksum 7
 	for i := 0; i < b.N; i++ {
-		Validate(input)
+		_, err := Validate(input)
+		if err != nil {
+			b.Fatalf("Validate() returned error: %v", err)
+		}
 	}
 }
