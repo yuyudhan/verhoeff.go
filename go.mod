@@ -1,3 +1,3 @@
-module github.com/yuyudhan/go-verhoeff
+module github.com/yuyudhan/verhoeff.go
 
 go 1.21

@@ -1,9 +1,5 @@
 # FilePath: .editorconfig
 
-# EditorConfig helps maintain consistent coding styles for multiple developers
-# working on the same project across various editors and IDEs
-# https://editorconfig.org/
-
 root = true
 
 [*]
@@ -13,19 +9,21 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
-max_line_length = 100
-
-[*.go]
-indent_style = space
-indent_size = 4
-
-[Makefile]
-indent_style = space
 
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{json,yml,yaml}]
-indent_style = space
-indent_size = 4
+[*.yml]
+indent_size = 2
 
+[*.yaml]
+indent_size = 2
+
+[go.mod]
+indent_style = tab
+
+[go.sum]
+indent_style = tab
+
+[Makefile]
+indent_style = tab
