@@ -42,16 +42,17 @@ func TestVeryLongNumbers(t *testing.T) {
 
 // TestRandomPatterns tests with pseudo-random patterns
 func TestRandomPatterns(t *testing.T) {
-    rand.Seed(42) // Deterministic for reproducibility
+    // Create a local random generator with a fixed seed for reproducibility
+    rng := rand.New(rand.NewSource(42))
 
     for i := 0; i < 100; i++ {
         // Generate a number of random length (10-100 digits)
-        length := 10 + rand.Intn(91)
+        length := 10 + rng.Intn(91)
         var number strings.Builder
         number.Grow(length)
 
         for j := 0; j < length; j++ {
-            digit := rand.Intn(10)
+            digit := rng.Intn(10)
             number.WriteRune(rune('0' + digit))
         }
 
@@ -73,7 +74,7 @@ func TestRandomPatterns(t *testing.T) {
 
             // Also verify error detection
             runes := []rune(withChecksum)
-            pos := rand.Intn(len(runes))
+            pos := rng.Intn(len(runes))
             oldDigit := int(runes[pos] - '0')
             newDigit := (oldDigit + 1) % 10
             runes[pos] = rune('0' + newDigit)
