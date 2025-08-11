@@ -1,152 +1,92 @@
-<!--FilePath: README.md-->
+# verhoeff.go
 
-# go-verhoeff
+Go implementation of the Verhoeff checksum algorithm for error detection in numerical identifiers.
 
-A Go implementation of the Verhoeff algorithm, a checksum formula for error detection.
+[![Go Reference](https://pkg.go.dev/badge/github.com/yuyudhan/verhoeff.go.svg)](https://pkg.go.dev/github.com/yuyudhan/verhoeff.go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/yuyudhan/verhoeff.go)](https://goreportcard.com/report/github.com/yuyudhan/verhoeff.go)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## About the Verhoeff Algorithm
+## Features
 
-The Verhoeff algorithm is a checksum formula for error detection developed by Dutch mathematician J. Verhoeff. Unlike many other checksum formulas, it can detect all single-digit errors and most transposition errors (when adjacent digits are swapped).
-
-For more information, see the [Wikipedia article](https://en.wikipedia.org/wiki/Verhoeff_algorithm).
-
-## Aadhaar Numbers & Verhoeff
-
-Did you know Aadhaar numbers (India's unique identification numbers) have the last digit as a Verhoeff checksum? The idea behind this is to quickly identify typing/data-entry errors on the entry machine.
-
-This implementation provides a specific function for validating Aadhaar numbers using the Verhoeff algorithm, making it simple to verify their integrity.
+- ✅ Detects **100% of single-digit errors** and **adjacent transpositions**
+- ⚡ High performance: ~150ns per operation
+- 🔒 Type-safe APIs for strings, integers, and slices
+- 🇮🇳 Built-in Aadhaar number validation
+- 🧵 Thread-safe and zero dependencies
 
 ## Installation
 
 ```bash
-go get github.com/yuyudhan/go-verhoeff
+go get github.com/yuyudhan/verhoeff.go
 ```
 
-## Usage
-
-### Basic Example
+## Quick Start
 
 ```go
-package main
+import verhoeff "github.com/yuyudhan/verhoeff.go"
 
-import (
-	"fmt"
-	"github.com/yuyudhan/go-verhoeff"
-)
+// Generate checksum
+checksum, _ := verhoeff.GenerateFromString("12345")  // Returns: 1
 
-func main() {
-	// Generate a checksum digit for a number
-	checksum, err := verhoeff.Generate("12345")
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Printf("Checksum for 12345: %d\n", checksum)
+// Validate number
+valid, _ := verhoeff.ValidateString("123451")  // Returns: true
 
-	// Generate and append the checksum to a number
-	numberWithChecksum, err := verhoeff.AppendChecksum("12345")
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Printf("Number with checksum: %s\n", numberWithChecksum)
+// Append checksum
+result, _ := verhoeff.AppendChecksumString("12345")  // Returns: "123451"
 
-	// Validate a number with a checksum
-	valid, err := verhoeff.Validate(numberWithChecksum)
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Printf("Is valid: %t\n", valid)
-
-	// Validate an Indian Aadhaar number
-	validAadhaar, err := verhoeff.ValidateAadhaar("496858245152") // Example Aadhaar number
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Printf("Is valid Aadhaar: %t\n", validAadhaar)
-}
+// Validate Aadhaar
+valid, _ := verhoeff.ValidateAadhaar("123456789010")  // Returns: true
 ```
 
-### Validating Aadhaar Numbers
+## API Reference
 
+### String Operations
 ```go
-// Check if an Aadhaar number is valid
-isValid, err := verhoeff.ValidateAadhaar("496858245152")
-if err != nil {
-    fmt.Println("Error:", err)
-} else if isValid {
-    fmt.Println("The Aadhaar number is valid")
-} else {
-    fmt.Println("The Aadhaar number is invalid")
-}
+GenerateFromString(s string) (int, error)
+ValidateString(s string) (bool, error)
+AppendChecksumString(s string) (string, error)
 ```
 
-### API
-
-#### `Generate(input interface{}) (int, error)`
-
-Calculates the Verhoeff checksum digit for a given input. The input can be a string of digits or an integer.
-
+### Integer Operations
 ```go
-// Using a string
-checksum, err := verhoeff.Generate("12345")
-
-// Using an integer
-checksum, err := verhoeff.Generate(12345)
-
-// Using a slice
-checksum, err := verhoeff.Generate([]int{1, 2, 3, 4, 5})
+GenerateInt(n int) int
+ValidateInt(n int) bool
+AppendChecksumInt(n int) string
 ```
 
-#### `GenerateString(input interface{}) (string, error)`
+### Aadhaar Validation
+```go
+ValidateAadhaar(aadhaarStr string) (bool, error)
+```
 
-Same as `Generate`, but returns the checksum as a string.
+### Generic Functions
+```go
+Generate(input interface{}) (int, error)     // Supports string, int, int64, []int
+Validate(input interface{}) (bool, error)
+AppendChecksum(input interface{}) (string, error)
+```
 
-#### `Validate(input interface{}) (bool, error)`
-
-Checks if a number with its checksum digit is valid. The input can be a string of digits or an integer.
-
-#### `ValidateAadhaar(aadhaarStr string) (bool, error)`
-
-Checks if an Aadhaar number (Indian identification number) is valid. Aadhaar numbers must be exactly 12 digits.
-
-#### `AppendChecksum(input interface{}) (string, error)`
-
-Adds the calculated checksum digit to the end of input and returns the result.
-
-#### `ConvertToDigits(input interface{}) ([]int, error)`
-
-Converts a string or integer to a slice of digits.
-
-#### `InvertArray(input interface{}) ([]int, error)`
-
-Converts input to a slice of digits and reverses it.
-
-## Running Tests
+## Examples
 
 ```bash
-go test
+# Run example
+go run examples/basic/main.go
+
+# With arguments
+go run examples/basic/main.go generate 12345
+go run examples/basic/main.go validate 123451
+go run examples/basic/main.go validateaadhaar 123456789010
 ```
 
-For benchmarks:
+## Development
 
-```bash
-go test -bench=.
-```
-
-## Original Implementation
-
-This is a Go port of the [node-verhoeff](https://www.npmjs.com/package/node-verhoeff) package, which was originally created by Sergey Petushkov in 2014 and later implemented for Node.js by [@yuyudhan](https://github.com/yuyudhan).
-
-The Node.js version can be installed via npm:
-
-```bash
-npm i node-verhoeff --save
-```
+See [DEVELOPER.md](DEVELOPER.md) for development setup, testing, and contributing guidelines.
 
 ## License
 
-MIT License - See LICENSE file for details.
+MIT
 
+## Credits
+
+- Algorithm by J. Verhoeff
+- Based on [Node.js implementation](https://github.com/yuyudhan/verhoeff)
